@@ -18,6 +18,9 @@ Route::get('/', [AssetController::class, 'index'])
 Route::get('/assets/{slug}', [AssetController::class, 'show'])
     ->name('assets.show');
 
+Route::get('/assets/{asset}/download', [AssetController::class, 'download'])
+    ->name('assets.download');
+
 /*
 |--------------------------------------------------------------------------
 | Default Dashboard (Laravel Breeze)
@@ -25,7 +28,9 @@ Route::get('/assets/{slug}', [AssetController::class, 'show'])
 */
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $assets = auth()->user()->assets()->latest()->get();
+
+    return view('dashboard', compact('assets'));
 })->middleware(['auth', 'verified'])
   ->name('dashboard');
 
@@ -53,6 +58,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/upload', [AssetController::class, 'store'])
         ->name('assets.store');
+
+    Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])
+        ->name('assets.edit');
+
+    Route::put('/assets/{asset}', [AssetController::class, 'update'])
+        ->name('assets.update');
 });
 
 /*
@@ -71,6 +82,12 @@ Route::middleware(['auth', 'admin'])
 
         Route::post('/assets/{id}/approve', [AdminAssetController::class, 'approve'])
             ->name('admin.assets.approve');
+
+        Route::post('/assets/{id}/reject', [AdminAssetController::class, 'reject'])
+            ->name('admin.assets.reject');
+
+        Route::delete('/assets/{id}', [AdminAssetController::class, 'destroy'])
+            ->name('admin.assets.destroy');
     });
 
 /*

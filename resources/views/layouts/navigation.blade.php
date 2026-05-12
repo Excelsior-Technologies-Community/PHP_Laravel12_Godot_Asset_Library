@@ -5,16 +5,34 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('home')" :active="request()->routeIs('home') || request()->routeIs('assets.show')">
+                        {{ __('Library') }}
                     </x-nav-link>
+
+                    @auth
+                        <x-nav-link :href="route('assets.create')" :active="request()->routeIs('assets.create')">
+                            {{ __('Upload') }}
+                        </x-nav-link>
+
+                        @if(Auth::user()->is_admin)
+                            <x-nav-link :href="route('admin.assets.index')" :active="request()->routeIs('admin.assets.*')">
+                                {{ __('Admin') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
+
+                    @auth
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('My Assets') }}
+                        </x-nav-link>
+                    @endauth
                 </div>
             </div>
 
@@ -71,9 +89,27 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home') || request()->routeIs('assets.show')">
+                {{ __('Library') }}
             </x-responsive-nav-link>
+
+            @auth
+                <x-responsive-nav-link :href="route('assets.create')" :active="request()->routeIs('assets.create')">
+                    {{ __('Upload') }}
+                </x-responsive-nav-link>
+
+                @if(Auth::user()->is_admin)
+                    <x-responsive-nav-link :href="route('admin.assets.index')" :active="request()->routeIs('admin.assets.*')">
+                        {{ __('Admin') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
+
+            @auth
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('My Assets') }}
+                </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
